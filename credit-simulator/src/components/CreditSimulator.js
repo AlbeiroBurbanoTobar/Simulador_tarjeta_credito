@@ -86,7 +86,7 @@ const CreditSimulator = () => {
   };
 
   return (
-    <div>
+ <div className="credit-simulator">
       <h1>Simulador de Crédito</h1>
       <form onSubmit={handleSubmit}>
         <div>
@@ -149,5 +149,6 @@ const CreditSimulator = () => {
     </div>
   );
 };
+
 
 export default CreditSimulator;

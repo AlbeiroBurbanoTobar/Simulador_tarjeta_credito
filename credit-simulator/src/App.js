@@ -1,5 +1,7 @@
 import React from "react";
 import CreditSimulator from "./components/CreditSimulator";
+import './App.css';
+
 
 function App() {
   return (
