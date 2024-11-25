@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import ReactTypingEffect from "react-typing-effect";
 /**
  * Calcula el plan de pagos para una compra con tarjeta de crédito.
  *
@@ -8,6 +8,7 @@ import React, { useState } from "react";
  * @param {number} tasaInteres - Tasa de interés mensual en porcentaje.
  * @returns {Array} Lista de objetos con la información de cada cuota.
  */
+
 const calcularCuotas = (montoTotal, numCuotas, tasaInteres) => {
   const tasaDecimal = tasaInteres / 100;
 
@@ -61,6 +62,20 @@ const calcularCuotas = (montoTotal, numCuotas, tasaInteres) => {
   return planPagos;
 };
 
+
+
+/**
+ * Formatea un número con puntos de miles.
+ * @param {string} value - Valor ingresado.
+ * @returns {string} Valor formateado con puntos de miles.
+ */
+const formatNumber = (value) => {
+  // Elimina caracteres no numéricos
+  const cleanValue = value.replace(/\D/g, '');
+  // Formatea con puntos de miles
+  return cleanValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+};
+
 /**
  * Componente principal para simular créditos con tarjeta de crédito.
  */
@@ -70,31 +85,51 @@ const CreditSimulator = () => {
   const [tasaInteres, setTasaInteres] = useState("");
   const [planPagos, setPlanPagos] = useState(null);
 
-  /**
-   * Maneja el envío del formulario y calcula el plan de pagos.
-   * @param {Object} e - Evento de envío del formulario.
+/**
+   * Maneja el cambio en el campo "Monto Total" y formatea el valor.
    */
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleMontoChange = (e) => {
+  const formattedValue = formatNumber(e.target.value);
+  setMontoTotal(formattedValue);
+};
 
-    const plan = calcularCuotas(
-      parseFloat(montoTotal),
-      parseInt(numCuotas, 10),
-      parseFloat(tasaInteres)
-    );
-    setPlanPagos(plan);
-  };
+
+ /**
+   * Maneja el envío del formulario y calcula el plan de pagos.
+   */
+ const handleSubmit = (e) => {
+  e.preventDefault();
+
+  // Elimina los puntos antes de realizar cálculos
+  const montoTotalParsed = parseFloat(montoTotal.replace(/\./g, ''));
+
+  const plan = calcularCuotas(
+    montoTotalParsed,
+    parseInt(numCuotas, 10),
+    parseFloat(tasaInteres)
+  );
+  setPlanPagos(plan);
+};
 
   return (
- <div className="credit-simulator">
-      <h1>Simulador de Crédito</h1>
+    <div className="credit-simulator">
+      <ReactTypingEffect
+        className="typing-header"
+        text={["Simulador de Crédito"]}
+        speed={150}
+        eraseSpeed={80}
+        typingDelay={300}
+      />
+      <br/>
+      <br/>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Monto Total:</label>
           <input
             type="number"
             value={montoTotal}
-            onChange={(e) => setMontoTotal(e.target.value)}
+            onChange={handleMontoChange}
+            placeholder="Ingresa el monto"
             required
           />
         </div>
@@ -133,22 +168,22 @@ const CreditSimulator = () => {
               </tr>
             </thead>
             <tbody>
-              {planPagos.map((cuota) => (
-                <tr key={cuota.cuota}>
-                  <td>{cuota.cuota}</td>
-                  <td>${cuota.valorCuota}</td>
-                  <td>${cuota.abonoCapital}</td>
-                  <td>${cuota.intereses}</td>
-                  <td>${cuota.saldo}</td>
-                </tr>
-              ))}
-            </tbody>
+            {planPagos.map((cuota) => (
+              <tr key={cuota.cuota}>
+                <td>{cuota.cuota}</td>
+                <td>${cuota.valorCuota.toLocaleString()}</td>
+                <td>${cuota.abonoCapital.toLocaleString()}</td>
+                <td>${cuota.intereses.toLocaleString()}</td>
+                <td>${cuota.saldo.toLocaleString()}</td>
+              </tr>
+            ))}
+          </tbody>
+
           </table>
         </div>
       )}
     </div>
   );
 };
-
 
 export default CreditSimulator;
