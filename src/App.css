@@ -1,0 +1,355 @@
+/* General _*/
+body {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  margin-top: 5%;
+}
+
+h1, h2 {
+  color: #ffffff;
+  text-align: center;
+}
+
+.credit-simulator {
+  width: 95%; /* Asegura que ocupe casi todo el ancho disponible */
+  max-width: 1080px; /* Tamaño máximo para pantallas grandes */
+  margin: auto;
+  padding: 20px;
+  background-color: #2a2a2a;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Encabezado animado */
+.typing-header {
+  font-family: 'Consolas', monospace;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ffffff;
+  text-align: center; /* Centra el texto horizontalmente */
+  margin: 0 auto; /* Asegura que se alinee dentro de su contenedor */
+  width: 100%; /* Asegura que ocupe todo el ancho del contenedor */
+  display: block; /* Para que el encabezado sea un bloque centrado */
+}
+
+
+/* Formularios */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+form div {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 5px;
+  font-size: 1rem;
+  color: #d3d3d3;
+}
+
+input {
+  padding: 10px;
+  border: 1px solid #444;
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: #333;
+  color: #ffffff;
+}
+
+input:focus {
+  border-color: #6a5acd;
+  outline: none;
+}
+
+button {
+  padding: 10px;
+  background-color: #6a5acd;
+  color: #ffffff;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #7d6ccf;
+}
+
+/* Tabla */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  border: 1px solid #444;
+  padding: 10px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+th {
+  background-color: #444;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+td {
+  background-color: #333;
+  color: #d3d3d3;
+}
+
+tr:nth-child(even) td {
+  background-color: #2a2a2a;
+}
+
+/* Resaltar última columna */
+tr td:last-child {
+  color: #6a5acd;
+  font-weight: bold;
+}
+
+/* --- Media Queries para Responsividad --- */
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 768px) {
+  .credit-simulator {
+    padding: 15px;
+  }
+
+  .typing-header {
+    font-size: 1.5rem;
+  }
+
+  form div {
+    width: 100%; /* Asegura que los inputs ocupen todo el ancho disponible */
+  }
+
+  input, button {
+    font-size: 0.9rem; /* Reduce el tamaño del texto */
+    padding: 8px;
+  }
+
+  table th, table td {
+    font-size: 0.8rem; /* Reduce el tamaño de la tabla */
+    padding: 8px;
+  }
+}
+
+/* Ajustes para pantallas extra pequeñas */
+@media (max-width: 480px) {
+  .typing-header {
+    font-size: 1.2rem;
+  }
+
+  button {
+    font-size: 0.8rem;
+  }
+
+  table th, table td {
+    font-size: 0.7rem; /* Reduce aún más el tamaño del texto */
+  }
+}
+
+
+/* Mensajes de error */
+.error {
+  margin: 0;
+  padding: 10px;
+  border: 1px solid #e06c75;
+  border-radius: 5px;
+  background-color: rgba(224, 108, 117, 0.1);
+  color: #e06c75;
+}
+
+/* Botones del formulario */
+.acciones {
+  flex-direction: row;
+  gap: 10px;
+}
+
+.acciones button {
+  flex: 1;
+}
+
+button.secundario {
+  background-color: #444;
+}
+
+button.secundario:hover {
+  background-color: #555;
+}
+
+/* Resumen del plan */
+.resumen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0 0;
+}
+
+.resumen div {
+  flex: 1 1 150px;
+  padding: 10px;
+  background-color: #333;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.resumen dt {
+  font-size: 0.9rem;
+  color: #d3d3d3;
+}
+
+.resumen dd {
+  margin: 5px 0 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #6a5acd;
+}
+
+/* Fondo de partículas */
+.particles-background {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  padding: 0 16px 40px;
+}
+
+.credit-simulator {
+  box-sizing: border-box;
+}
+
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* Información de pagos */
+.info-pagos,
+.footer {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 20px;
+  background-color: #2a2a2a;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.info-pagos {
+  max-width: 840px;
+}
+
+.info-pagos-titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 20px;
+  padding: 10px 20px;
+  background-color: #000;
+  border-radius: 8px 8px 0 0;
+  font-size: 1.5rem;
+  text-align: left;
+}
+
+.info-pagos-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px 30px;
+  padding: 0 10px;
+}
+
+.info-pagos-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.info-pagos-icono {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: #3a3a3a;
+  font-size: 1.3rem;
+}
+
+.info-pagos-item h3 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  color: #fff;
+}
+
+.info-pagos-item p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #d3d3d3;
+}
+
+/* Pie de página */
+.footer {
+  max-width: 440px;
+  margin-top: 60px;
+  text-align: center;
+}
+
+.footer h2 {
+  margin: 10px 0;
+  font-size: 1.2rem;
+}
+
+.footer-autor {
+  color: #aaa;
+}
+
+.footer-redes-titulo {
+  font-size: 0.9rem;
+}
+
+.footer-redes {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  font-size: 1.6rem;
+}
+
+.footer-redes a {
+  color: #fff;
+  transition: color 0.3s ease;
+}
+
+.footer-redes a:hover {
+  color: #6a5acd;
+}
+
+@media (max-width: 768px) {
+  .info-pagos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .info-pagos-titulo {
+    font-size: 1.2rem;
+  }
+}
