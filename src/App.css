@@ -54,7 +54,8 @@ label {
   color: #d3d3d3;
 }
 
-input {
+input,
+select {
   padding: 10px;
   border: 1px solid #444;
   border-radius: 5px;
@@ -63,7 +64,12 @@ input {
   color: #ffffff;
 }
 
-input:focus {
+select:disabled {
+  color: #888;
+}
+
+input:focus,
+select:focus {
   border-color: #6a5acd;
   outline: none;
 }
@@ -352,4 +358,20 @@ button {
   .info-pagos-titulo {
     font-size: 1.2rem;
   }
+}
+
+/* Notas de referencia de tasas */
+.nota {
+  margin-top: 5px;
+  font-size: 0.8rem;
+  color: #999;
+}
+
+/* Nota que va directamente en el formulario, pegada al campo de tasa */
+form > .nota {
+  margin-top: -14px;
+}
+
+.nota.aviso {
+  color: #e5c07b;
 }

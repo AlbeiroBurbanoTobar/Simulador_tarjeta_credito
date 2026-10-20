@@ -10,6 +10,22 @@ Simulador de cuotas para compras con tarjeta de crédito. Ingresas el monto de l
 - Validación de datos: el monto debe ser mayor que 0, las cuotas un entero de 1 o más y la tasa no puede ser negativa.
 - Botón para limpiar el formulario.
 - Cuadro informativo que explica cómo se calcula cada cuota.
+- Selector de banco que llena la tasa con la tasa plena de tarjetas de crédito de esa entidad.
+- Tasa de usura vigente como referencia, con aviso si la tasa ingresada la supera.
+
+## Datos de tasas
+
+Las tasas se consultan al cargar la página desde el portal de datos abiertos [datos.gov.co](https://www.datos.gov.co), con información de la Superintendencia Financiera. No requieren clave.
+
+| Dato | Dataset | Actualización |
+|---|---|---|
+| Tasa plena por banco | [`qzsc-9esp`](https://www.datos.gov.co/resource/qzsc-9esp.json) – Tasas de interés activas por tipo de crédito | Semanal |
+| Tasa de usura | [`pare-7x5i`](https://www.datos.gov.co/resource/pare-7x5i.json) – Tasa de interés bancario corriente | Mensual |
+
+- La tasa por banco es la más alta que la entidad reportó para tarjetas de crédito de personas naturales en el último corte. No se usa el promedio porque los bancos reportan muchas compras con tasas promocionales (0 % a 0,5 % E.A.) que lo bajan muy por debajo de la tasa que aparece en el extracto. Por ejemplo, Bancolombia: promedio 1,39 % M.V., tasa plena 2,1156 % M.V.
+- La tasa de usura es 1,5 veces el interés bancario corriente de consumo y ordinario.
+- Las tasas vienen en efectiva anual (E.A.) y se convierten a mensual vencida (M.V.) con `(1 + EA)^(1/12) − 1`.
+- Si la consulta falla, la tasa se puede seguir ingresando a mano.
 
 ## Cómo se calculan las cuotas
 
@@ -54,11 +70,13 @@ src/
 ├── App.js                         # Composición de la página
 ├── App.css                        # Estilos
 ├── App.test.js                    # Tests
-└── components/
-    ├── CreditSimulator.js         # Formulario, cálculo y plan de pagos
-    ├── InfoPagos.js               # Cuadro "Información de Pagos"
-    ├── Footer.js                  # Autor y enlaces de contacto
-    └── ParticlesBackground.js     # Fondo animado de partículas
+├── components/
+│   ├── CreditSimulator.js         # Formulario, cálculo y plan de pagos
+│   ├── InfoPagos.js               # Cuadro "Información de Pagos"
+│   ├── Footer.js                  # Autor y enlaces de contacto
+│   └── ParticlesBackground.js     # Fondo animado de partículas
+└── services/
+    └── tasas.js                   # Consultas a datos.gov.co
 ```
 
 ## Tecnologías

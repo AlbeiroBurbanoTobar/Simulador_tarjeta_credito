@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactTypingEffect from "react-typing-effect";
 import { LuCalculator } from "react-icons/lu";
+import { obtenerTasasBancos, obtenerTasaUsura } from "../services/tasas";
 /**
  * Calcula el plan de pagos para una compra con tarjeta de crédito.
  *
@@ -98,6 +99,11 @@ const validar = (monto, cuotas, tasa) => {
 };
 
 /**
+ * Formatea una fecha ISO (AAAA-MM-DD) como DD/MM/AAAA.
+ */
+const formatFecha = (iso) => iso.split("-").reverse().join("/");
+
+/**
  * Componente principal para simular créditos con tarjeta de crédito.
  */
 const CreditSimulator = () => {
@@ -106,6 +112,26 @@ const CreditSimulator = () => {
   const [tasaInteres, setTasaInteres] = useState("");
   const [planPagos, setPlanPagos] = useState(null);
   const [error, setError] = useState(null);
+  const [banco, setBanco] = useState("");
+  // Tasas de referencia de datos.gov.co; si fallan, la tasa se ingresa a mano
+  const [tasasBancos, setTasasBancos] = useState({ estado: "cargando" });
+  const [usura, setUsura] = useState(null);
+
+  useEffect(() => {
+    let activo = true;
+
+    obtenerTasasBancos()
+      .then((datos) => activo && setTasasBancos({ estado: "ok", ...datos }))
+      .catch(() => activo && setTasasBancos({ estado: "error" }));
+
+    obtenerTasaUsura()
+      .then((datos) => activo && setUsura(datos))
+      .catch(() => {});
+
+    return () => {
+      activo = false;
+    };
+  }, []);
 
   /**
    * Actualiza un campo y descarta el plan calculado, que ya no corresponde a los datos.
@@ -122,6 +148,26 @@ const CreditSimulator = () => {
 const handleMontoChange = (e) => {
   actualizar(setMontoTotal)(formatNumber(e.target.value));
 };
+
+  /**
+   * Al elegir un banco, llena la tasa mensual con su tasa plena.
+   */
+  const handleBancoChange = (e) => {
+    const nombre = e.target.value;
+    setBanco(nombre);
+    const seleccionado = tasasBancos.bancos.find((b) => b.nombre === nombre);
+    if (seleccionado) {
+      actualizar(setTasaInteres)(seleccionado.tasaMV.toFixed(4));
+    }
+  };
+
+  /**
+   * Si la tasa se edita a mano, deja de corresponder al banco elegido.
+   */
+  const handleTasaChange = (e) => {
+    setBanco("");
+    actualizar(setTasaInteres)(e.target.value);
+  };
 
 
  /**
@@ -158,9 +204,12 @@ const handleMontoChange = (e) => {
     setMontoTotal("");
     setNumCuotas("");
     setTasaInteres("");
+    setBanco("");
     setPlanPagos(null);
     setError(null);
   };
+
+  const superaUsura = usura && parseFloat(tasaInteres) > usura.usuraMV;
 
   const totalPagado = planPagos?.reduce((acc, c) => acc + c.valorCuota, 0) ?? 0;
   const totalIntereses = planPagos?.reduce((acc, c) => acc + c.intereses, 0) ?? 0;
@@ -203,6 +252,37 @@ const handleMontoChange = (e) => {
           />
         </div>
         <div>
+          <label htmlFor="banco">Banco (opcional):</label>
+          <select
+            id="banco"
+            value={banco}
+            onChange={handleBancoChange}
+            disabled={tasasBancos.estado !== "ok"}
+          >
+            <option value="">
+              {tasasBancos.estado === "cargando"
+                ? "Cargando tasas de los bancos..."
+                : tasasBancos.estado === "error"
+                ? "No se pudieron cargar las tasas; ingrésala a mano"
+                : "Selecciona un banco para usar su tasa"}
+            </option>
+            {tasasBancos.estado === "ok" &&
+              tasasBancos.bancos.map((b) => (
+                <option key={b.nombre} value={b.nombre}>
+                  {b.nombre} — {b.tasaMV.toFixed(4)} % M.V. ({b.tasaEA.toFixed(2)} % E.A.)
+                </option>
+              ))}
+          </select>
+          {tasasBancos.estado === "ok" && (
+            <small className="nota">
+              Tasa plena de tarjetas de crédito de personas naturales: la más alta
+              que el banco reportó a la Superintendencia Financiera (corte{" "}
+              {formatFecha(tasasBancos.fechaCorte)}). Compras con tasas
+              promocionales pueden tener una tasa menor; revisa tu extracto.
+            </small>
+          )}
+        </div>
+        <div>
           <label htmlFor="tasaInteres">Tasa de Interés Mensual (%):</label>
           <input
             id="tasaInteres"
@@ -211,10 +291,17 @@ const handleMontoChange = (e) => {
             step="any"
             value={tasaInteres}
             placeholder="Ingresa la tasa de interés mensual (m.v). Ejemplo: 2.06"
-            onChange={(e) => actualizar(setTasaInteres)(e.target.value)}
+            onChange={handleTasaChange}
             required
           />
         </div>
+        {usura && (
+          <small className={superaUsura ? "nota aviso" : "nota"}>
+            {superaUsura
+              ? `Esta tasa supera la tasa de usura vigente (${usura.usuraMV.toFixed(2)} % M.V.), el máximo legal que se puede cobrar.`
+              : `Tasa de usura vigente: ${usura.usuraMV.toFixed(2)} % M.V. (${usura.usuraEA.toFixed(2)} % E.A.), válida hasta el ${formatFecha(usura.vigenciaHasta)}.`}
+          </small>
+        )}
         {error && (
           <p className="error" role="alert">
             {error}
